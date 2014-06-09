@@ -6,38 +6,11 @@
 
 
 	var NRDForm = (function (){
-		var $errorsContainer,
-			$formContainer, 
-			$form;
 
-		function buildForm() {
-			var el = document.createElement('div'),
-				html = '';
-
-			el.setAttribute('id', 'nrd-form-wrapper');
-
-			html += '<div class="form"><header><h3>Donate</h3><span class="close-form">close</span></header>';
-
-			html += '<form><fieldset><label>Amount</label><input type="text" class="currency" name="donation-ammount"/></fieldset>';
-			html += '<fieldset><label>Name</label><input type="text" data-stripe="name" /></fieldset>';
-			html += '<fieldset><label>Email</label><input type="email" name="email" /></fieldset>';
-			html += '<fieldset><label>Card Number</label><input type="text" data-stripe="number"/></fieldset>';
-			html += '<fieldset><label>Expiration Date</label><input type="text" data-stripe="exp-month" size="2"/><input type="text" data-stripe="exp-year" size="4" /></fieldset>';
-			html += '<fieldset><label>Security code (CVC)</label><input type="text" size="4" data-stripe="cvc"/></fieldset>';
-			html += '<div class="errors"></div>';
-			html += '<input type="submit" />';
-			html += '</form></div>';	
-
-			el.innerHTML = html; 
-			document.body.appendChild(el);
-
-			$formContainer = $('#nrd-form-wrapper');
-			$form = $formContainer.find('form');
+		var $formContainer = $('#nrd-form-wrapper'),
+			$form = $formContainer.find('form'), 
 			$errorsContainer = $formContainer.find('.errors');
-		
-			bindEvents();
 
-		}
 
 		function bindEvents() {
 			$form.on('submit', submitForm);
@@ -46,7 +19,7 @@
 
 		function removeErrors() {
 			var input = $(this);
-			
+
 			input.removeClass('error');
 			$errorsContainer.html('');
 		}
@@ -74,8 +47,29 @@
     
     			$form.append($('<input type="hidden" name="stripeToken" />').val(token));
 
+    			sendToTheServer();
 
 			}
+		}
+
+		function sendToTheServer() {
+			var call = {},
+				data;
+
+			call.url = FormProcessAJAX.url;
+			call.type = 'POST';
+			call.data = {
+				formContent : data,
+				action: 'submit_form',
+				 _ajax_nonce: FormProcessAJAX.nonce
+			};
+			call.success = showThanks;
+
+			$.ajax(call);
+		}
+
+		function showThanks(r,a) {
+			console.log(r,a);
 		}
 
 		function showForm() {
@@ -89,7 +83,7 @@
 
 
 		return {
-			init : buildForm,
+			init : bindEvents,
 			show : showForm, 
 			hide : hideForm
 		};
