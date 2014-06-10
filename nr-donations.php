@@ -16,11 +16,14 @@ License: GPL2
 class NR_Donations {
 
 	public function __construct() {
+
 		if(is_admin()) {
 
 			add_action('admin_menu', array(&$this, 'admin_menu'));
 			add_action('admin_init', array(&$this, 'register_nrd_settings'));
 		}
+
+		add_shortcode( 'nrdonate', array(&$this, 'create_donate_button'));
 
 		add_action('init', array(&$this, 'create_post_type'));
 		
@@ -31,6 +34,14 @@ class NR_Donations {
 
 
 	
+	}
+
+	function create_donate_button($atts) {
+		echo 'test';
+		$a = shortcode_atts( array(
+			'text' => 'Donate'
+		), $atts );
+		return '<span class="nr-donate-button inline">'.$a['text'].'</span>';
 	}
 
 	function register_nrd_settings() {

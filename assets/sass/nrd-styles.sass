@@ -1,5 +1,9 @@
 @import 'compass'
 
+.nr-donate-button
+	display: inline-block 
+	background: red 
+	cursor: pointer
 #nrd-form-wrapper
 	position: fixed 
 	top: 0
@@ -8,6 +12,9 @@
 	bottom: 0
 	background: rgba(225,225,225, 0.6)
 	z-index: 999
+	display: none
+	&.show 
+		display: block
 	.nrd-form 
 		width: 500px 
 		height: auto 
@@ -16,6 +23,8 @@
 		top: 50%
 		left: 50%
 		@include translate(-50%, -50%)
+		
+
 		header 
 			background: black 
 			position: relative 

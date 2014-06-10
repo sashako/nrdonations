@@ -26,7 +26,7 @@
 
 			$input.removeClass('error');
 
-			if($form.find('input.error').length < 1) $errorsContainer.html('');
+			if($form.find('input.error').length < 1) $errorsContainer.removeClass('show').html('');
 			
 		}
 		function checkForErrors(e) {
@@ -85,7 +85,7 @@
 				var i = 0,
 					l = errors.length;
 				for(i; i<l; i++) {
-					displayError(errors[i]);
+					displayError(errors[i], i==l-1);
 				}
 			} else {
 				submitForm();
@@ -93,9 +93,11 @@
 
 			e.preventDefault();
 		}
-		function displayError (err) {
+		function displayError (err, last) {
+			var isLast = last || false;
 			if(err.el) err.el.addClass('error');
 			$errorsContainer.append('<span>'+err.message+'</span>');
+			if(isLast) $errorsContainer.addClass('show');
 		}
 
 		function submitForm(e) {
@@ -142,7 +144,7 @@
 			
 			call.success = successfullySubmitted;
 			call.error = function() {
-				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false});
+				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false}, true);
 			}
 
 			$.ajax(call);
@@ -152,12 +154,13 @@
 			if(status === 'success') {
 				$formContainer.addClass('thank-you');
 			} else {
-				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false});
+				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false}, true);
 			}
 		}
 
 		function showForm() {
 			$formContainer.addClass('show');
+			console.log('show');
 		}
 
 		function hideForm() {
@@ -174,12 +177,12 @@
 	}) ();
 
 	
-	var buttons = $('nr-donate-button');
+	var buttons = $('.nr-donate-button');
 
-	if(buttons.length > -1 ) {
+	if(buttons.length > 0 ) {
 
 		NRDForm.init();
-
+		
 		buttons.on('click', NRDForm.show);
 	}
 
