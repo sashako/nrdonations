@@ -10,11 +10,13 @@
 		var $formContainer = $('#nrd-form-wrapper'),
 			$form = $formContainer.find('form'), 
 			$errorsContainer = $formContainer.find('.errors'),
+			$closeButton = $formContainer.find('.close-form'),
 			emailRex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
 			strRex = /\S/;
 
 
 		function bindEvents() {
+			$closeButton.on('click', hideForm);
 			$form.on('submit', checkForErrors);
 			$form.on('keydown', 'input.error', removeErrors);
 		}
@@ -51,7 +53,7 @@
 				});
 			}
 
-			if( !emailVal || emailRex.test( emailVal ) ) {
+			if( !emailVal || !emailRex.test( emailVal ) ) {
 				errors.push({
 					message : 'Please enter a valid email address.',
 					el : $form.find('input[name="email"]')
@@ -92,7 +94,7 @@
 			e.preventDefault();
 		}
 		function displayError (err) {
-			err.el.addClass('error');
+			if(err.el) err.el.addClass('error');
 			$errorsContainer.append('<span>'+err.message+'</span>');
 		}
 
@@ -130,29 +132,38 @@
 			call.url = FormProcessAJAX.url;
 			call.type = 'POST';
 			call.data = {
-				formData : $form.serialize(),
 				action : 'submit_form',
+				token : $form.find('input[name="stripeToken"]').val(),
+				amount : $form.find('input[name="amount"]').val(),
+				name : $form.find('input[name="name"]').val(),
+				email : $form.find('input[name="email"]').val(),
 				 _ajax_nonce : FormProcessAJAX.nonce
 			};
 			
-			call.success = showThanks;
+			call.success = successfullySubmitted;
+			call.error = function() {
+				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false});
+			}
 
 			$.ajax(call);
 		}
 
-		function showThanks(r,a) {
-			console.log(r,a);
+		function successfullySubmitted(data, status, xhr) {
+			if(status === 'success') {
+				$formContainer.addClass('thank-you');
+			} else {
+				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false});
+			}
 		}
 
 		function showForm() {
-
+			$formContainer.addClass('show');
 		}
 
 		function hideForm() {
-
+			$formContainer.removeClass('show thank-you');
 
 		}
-
 
 		return {
 			init : bindEvents,

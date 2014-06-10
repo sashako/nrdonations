@@ -90,6 +90,39 @@ class NR_Donations {
 			die('Error');
 		} 
 
+		require_once(dirname(__FILE__).'/include/Stripe.php');
+
+		$nrd_opt = get_option('nrd_settings');
+
+		if(isset($nrd_opt['test_mode']) && $nrd_opt['test_mode']) {
+
+			$secret_key = $nrd_opt['test_secret_key'];
+
+		} else {	
+
+			$secret_key = $nrd_opt['live_secret_key'];
+
+		}
+
+		$token = $_POST['token'];
+		$amount = $_POST['amount'];
+		$name = $_POST['name'];
+		$email = $_POST['email'];
+
+		try {
+			Stripe::setApiKey($secret_key);
+			$charge = Stripe_Charge::create(array(
+					'amount' => intval($amount)*100, 
+					'currency' => 'usd',
+					'card' => $token,
+					'description' => $name.' <'.$email.'>'
+				)
+			);
+		} catch (Exception $e) {
+
+			die('Error');
+		}
+
 		die();
 	}
 
