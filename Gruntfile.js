@@ -8,15 +8,15 @@ module.exports = function(grunt) {
 		compass: {
 			dist: {
 				options: {
-					sassDir: 'sass',
+					sassDir: 'assets/sass',
 					outputStyle: 'compressed',
-					cssDir: 'css'
+					cssDir: 'assets/css'
 				}
 			}
 		},
 		watch: {
 			css: {
-				files: 'sass/*.sass',
+				files: 'assets/sass/*.sass',
 				tasks: ['compass']
 			}
 		}

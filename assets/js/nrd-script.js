@@ -53,15 +53,20 @@
 		}
 
 		function sendToTheServer() {
-			var call = {},
-				data;
+			var call = {};
 
 			call.url = FormProcessAJAX.url;
 			call.type = 'POST';
 			call.data = {
-				formContent : data,
-				action: 'submit_form',
-				 _ajax_nonce: FormProcessAJAX.nonce
+				token : $form.find('input[name="stripeToken"]').val(),
+				name :  $form.find('input[name="name"]').val(),
+				email : $form.find('input[name="email"]').val(),
+				card : $form.find('input[name="card-number"]').val(),
+				month : $form.find('input[name="exp-month"]').val(),
+				year : $form.find('input[name="exp-year"]').val(),
+				cvc : $form.find('input[name="cvc"]').val(),
+				action : 'submit_form',
+				 _ajax_nonce : FormProcessAJAX.nonce
 			};
 			call.success = showThanks;
 
