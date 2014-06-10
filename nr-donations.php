@@ -17,7 +17,7 @@ class NR_Donations {
 
 	public function __construct() {
 		if(is_admin()) {
-			
+
 			add_action('admin_menu', array(&$this, 'admin_menu'));
 			add_action('admin_init', array(&$this, 'register_nrd_settings'));
 		}
@@ -76,6 +76,7 @@ class NR_Donations {
 
 		wp_localize_script('nr-donations-js', 'FormProcessAJAX', array(
 			'url' => admin_url('admin-ajax.php'),
+			'pkey' => get_option('nrd_settings')['test_mode'] ? get_option('nrd_settings')['test_publishable_key'] : get_option('nrd_settings')['live_publishable_key'],
 			'nonce' => wp_create_nonce('nrd-submit-form')
 		));
 
@@ -88,7 +89,7 @@ class NR_Donations {
 		if (! wp_verify_nonce($nonce, 'nrd-submit-form')) {
 			die('Error');
 		} 
-
+		
 		die();
 	}
 

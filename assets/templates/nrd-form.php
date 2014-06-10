@@ -8,7 +8,7 @@
 		<form>
 			<fieldset>
 				<label>Amount</label>
-				<input type="text" class="currency" name="ammount" />
+				<input type="text" class="currency" name="amount" />
 			</fieldset>
 			<fieldset>
 				<label>Name</label>
@@ -20,10 +20,10 @@
 			</fieldset>
 			<fieldset>
 				<label>Card Number</label>
-				<input type="text" name="card-bumber" data-stripe="number" />
+				<input type="text" name="card-number" data-stripe="number" />
 			</fieldset>
 			<fieldset>
-				<label>Expiration Date</label>
+				<label>Expiration Date (mm/yyyy)</label>
 				<input type="text" name="exp-month" data-stripe="exp-month" size="2" />
 				<input type="text" name="exp-year" data-stripe="exp-year" size="4" />
 			</fieldset>
