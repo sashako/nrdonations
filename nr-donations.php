@@ -39,9 +39,9 @@ class NR_Donations {
 
 	function admin_menu() {
 
-		add_menu_page('Donations', 'Donations', 'administrator', 'nr-donations/nr-donations-admin-list.php', '', 'dashicons-marker', 25);
+		add_menu_page('Donations', 'Donations', 'administrator', 'nr-donations/nrd-admin-list.php', '', 'dashicons-marker', 25);
 
-		add_options_page('Donations Settings', 'Donations Settings', 'administrator', 'nr-donations/nr-donations-admin-settings.php');
+		add_options_page('Donations Settings', 'Donations Settings', 'administrator', 'nr-donations/nrd-admin-settings.php');
 	}
 
 	function create_post_type() {
@@ -89,7 +89,7 @@ class NR_Donations {
 		if (! wp_verify_nonce($nonce, 'nrd-submit-form')) {
 			die('Error');
 		} 
-		
+
 		die();
 	}
 

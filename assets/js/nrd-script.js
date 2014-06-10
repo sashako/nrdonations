@@ -134,7 +134,7 @@
 				action : 'submit_form',
 				 _ajax_nonce : FormProcessAJAX.nonce
 			};
-			console.log(call.data);
+			
 			call.success = showThanks;
 
 			$.ajax(call);
