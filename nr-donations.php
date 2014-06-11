@@ -102,6 +102,7 @@ class NR_Donations {
 		} 
 
 		require_once(dirname(__FILE__).'/include/Stripe.php');
+		require_once(dirname(__FILE__).'/include/MailChimpSubscribe.php');
 
 		$nrd_opt = get_option('nrd_settings');
 
@@ -119,19 +120,37 @@ class NR_Donations {
 		$amount = $_POST['amount'];
 		$name = $_POST['name'];
 		$email = $_POST['email'];
+		$subscribe = $_POST['subscribe'];
 
 		try {
+
 			Stripe::setApiKey($secret_key);
-			$charge = Stripe_Charge::create(array(
-					'amount' => intval($amount)*100, 
-					'currency' => 'usd',
-					'card' => $token,
-					'description' => $name.' <'.$email.'>'
-				)
+
+			$customer = Stripe_Customer::create(array(
+				'card' => $token,
+				'email' => $email,
+				'description' => $name)
 			);
+
+			$charge = Stripe_Charge::create(array(
+				'amount' => intval($amount)*100, 
+				'currency' => 'usd',
+				'customer' => $customer->id)
+			);
+
 		} catch (Exception $e) {
 
 			die('Error');
+		}
+
+		if($subscribe) {
+			$list_id = get_option('nrd_settings')['list_id'];
+			$mc_api_key = get_option('nrd_settings')['mailchimp_key'];
+			$subscriber_name = strlen(trim($name)) == 0 ? null : $name;
+			
+			$mc = new MailChimpSubscribe($mc_api_key);
+
+			$mc->subscribe($list_id, $email, $subscriber_name);
 		}
 
 		die();

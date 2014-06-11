@@ -30,21 +30,13 @@
 			
 		}
 		function checkForErrors(e) {
-			var nameVal = $form.find('input[name="name"]').val(),
-				emailVal = $form.find('input[name="email"]').val(),
+			var emailVal = $form.find('input[name="email"]').val(),
 				amountVal = $form.find('input[name="amount"]').val(),
 				cvcVal = $form.find('input[name="cvc"]').val(),
 				cardVal = $form.find('input[name="card-number"]').val(),
 				yearVal = $form.find('input[name="exp-year"]').val(),
 				monthVal = $form.find('input[name="exp-month"]').val(),
 				errors = [];
-
-			if( !nameVal || !strRex.test(nameVal)) {
-				errors.push({
-					message : 'Please enter your name.',
-					el : $form.find('input[name="name"]')
-				});
-			}
 
 			if( !amountVal || !strRex.test(amountVal) || parseInt( amountVal ) < 5 ) {
 				errors.push({
@@ -139,6 +131,7 @@
 				amount : $form.find('input[name="amount"]').val(),
 				name : $form.find('input[name="name"]').val(),
 				email : $form.find('input[name="email"]').val(),
+				subscribe : $form.find('input[name="subscribe"]').val(),
 				 _ajax_nonce : FormProcessAJAX.nonce
 			};
 			
