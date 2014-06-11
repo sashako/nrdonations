@@ -160,7 +160,6 @@
 
 		function showForm() {
 			$formContainer.addClass('show');
-			console.log('show');
 		}
 
 		function hideForm() {
