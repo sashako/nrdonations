@@ -11,8 +11,6 @@ License: GPL2
 
 */
 
-
-
 class NR_Donations {
 
 	public function __construct() {
@@ -24,15 +22,14 @@ class NR_Donations {
 		}
 
 		add_shortcode( 'nrdonate', array(&$this, 'create_donate_button'));
-
-		add_action('init', array(&$this, 'create_post_type'));
 		
 		add_action('wp_footer', array(&$this, 'register_user_assets'));
 
 		add_action('wp_ajax_submit_form', array(&$this, 'process_form'));
 		add_action('wp_ajax_nopriv_submit_form', array(&$this, 'process_form'));
 
-
+		require_once(dirname(__FILE__).'/include/Stripe.php');
+		
 	
 	}
 
@@ -50,27 +47,7 @@ class NR_Donations {
 
 	function admin_menu() {
 
-		add_menu_page('Donations', 'Donations', 'administrator', 'nr-donations/nrd-admin-list.php', '', 'dashicons-marker', 25);
-
 		add_options_page('Donations Settings', 'Donations Settings', 'administrator', 'nr-donations/nrd-admin-settings.php');
-	}
-
-	function create_post_type() {
-		$labels = array(
-			'singular_name' =>'donation',
-			'name' => 'donations',
-			'not_found' => 'no donations found'
-		);
-		register_post_type('donation', array(
-			'label' => 'Donations',
-			'labels' => $labels,
-			'public' => true,
-			'publicly_queryable' => false, 
-			'exclude_from_search' => true,
-			'supports' => false,
-			'show_in_menu' => false
-		));
-		
 	}
 
 	function register_user_assets() {
@@ -87,22 +64,12 @@ class NR_Donations {
 
 		wp_localize_script('nr-donations-js', 'FormProcessAJAX', array(
 			'url' => admin_url('admin-ajax.php'),
-			'pkey' => get_option('nrd_settings')['test_mode'] ? get_option('nrd_settings')['test_publishable_key'] : get_option('nrd_settings')['live_publishable_key'],
-			'nonce' => wp_create_nonce('nrd-submit-form')
+			'pkey' => get_option('nrd_settings')['test_mode'] ? get_option('nrd_settings')['test_publishable_key'] : get_option('nrd_settings')['live_publishable_key']
 		));
 
 	}
 
 	function process_form() {
-
-		$nonce = $_POST['_ajax_nonce'];
-
-		if (! wp_verify_nonce($nonce, 'nrd-submit-form')) {
-			die('Error');
-		} 
-
-		require_once(dirname(__FILE__).'/include/Stripe.php');
-		require_once(dirname(__FILE__).'/include/MailChimpSubscribe.php');
 
 		$nrd_opt = get_option('nrd_settings');
 
@@ -140,20 +107,25 @@ class NR_Donations {
 
 		} catch (Exception $e) {
 
-			die('Error');
+			die('Stripe request failed');
 		}
 
-		if($subscribe) {
-			$list_id = get_option('nrd_settings')['list_id'];
-			$mc_api_key = get_option('nrd_settings')['mailchimp_key'];
+		if($subscribe == true) {
+
+			require_once(dirname(__FILE__).'/include/MailChimpSubscribe.php');
+
+			$list_id = $nrd_opt['list_id'];
+			$mc_api_key = $nrd_opt['mailchimp_key'];
 			$subscriber_name = strlen(trim($name)) == 0 ? null : $name;
-			
+
 			$mc = new MailChimpSubscribe($mc_api_key);
 
-			$mc->subscribe($list_id, $email, $subscriber_name);
-		}
+			$sub = $mc->add($list_id, $email, $subscriber_name);
 
+		}
+		
 		die();
+		
 	}
 
 };

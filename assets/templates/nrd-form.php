@@ -23,7 +23,7 @@
 				<input type="text" name="card-number" data-stripe="number" />
 			</fieldset>
 			<fieldset>
-				<label>Expiration Date (mm/yyyy)</label>
+				<label>Expiration Date <span>(mm/yyyy)</span></label>
 				<input type="text" name="exp-month" data-stripe="exp-month" size="2" />
 				<input type="text" name="exp-year" data-stripe="exp-year" size="4" />
 			</fieldset>
@@ -32,9 +32,8 @@
 				<input type="text" name="cvc" size="4" data-stripe="cvc"/>
 			</fieldset>
 			<fieldset>
-				<input type="checkbox" name="subscribe" />
-				<label>Subscribe to Newtown Radio newsletter.</label>
-				
+				<input type="checkbox" name="subscribe" id="subscribe-to-nrn"/>
+				<label for="subscribe-to-nrn">Subscribe to Newtown Radio newsletter.</label>
 			</fieldset>
 			<div class="errors"></div>
 			<input type="submit" />

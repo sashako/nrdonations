@@ -17,6 +17,8 @@
 
 		function bindEvents() {
 			$closeButton.on('click', hideForm);
+			$formContainer.on('click', hideForm);
+			$('.nrd-form').on('click', function(e){ e.stopPropagation();});
 			$form.on('submit', checkForErrors);
 			$form.on('keydown', 'input.error', removeErrors);
 		}
@@ -131,10 +133,9 @@
 				amount : $form.find('input[name="amount"]').val(),
 				name : $form.find('input[name="name"]').val(),
 				email : $form.find('input[name="email"]').val(),
-				subscribe : $form.find('input[name="subscribe"]').val(),
-				 _ajax_nonce : FormProcessAJAX.nonce
+				subscribe : $form.find('input[name="subscribe"]').is(':checked')
 			};
-			
+			console.log(call.data);
 			call.success = successfullySubmitted;
 			call.error = function() {
 				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false}, true);
@@ -144,6 +145,9 @@
 		}
 
 		function successfullySubmitted(data, status, xhr) {
+			console.log(data);
+			console.log(status);
+			console.log(xhr);
 			if(status === 'success') {
 				$formContainer.addClass('thank-you');
 			} else {
@@ -157,6 +161,7 @@
 
 		function hideForm() {
 			$formContainer.removeClass('show thank-you');
+			$form[0].reset();
 
 		}
 

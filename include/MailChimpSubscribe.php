@@ -73,4 +73,3 @@
 			return $result ? json_decode($result, true) : false;
 		}
 	}
-?>
