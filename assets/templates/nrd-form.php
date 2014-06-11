@@ -7,7 +7,7 @@
 
 		<form>
 			<fieldset>
-				<label>Amount</label>
+				<label>Amount<span>$5 minimum</span></label>
 				<input type="text" class="currency" name="amount" />
 			</fieldset>
 			<fieldset>
@@ -30,6 +30,11 @@
 			<fieldset>
 				<label>Security code (CVC)</label>
 				<input type="text" name="cvc" size="4" data-stripe="cvc"/>
+			</fieldset>
+			<fieldset>
+				<input type="checkbox" name="subscribe" />
+				<label>Subscribe to Newtown Radio newsletter.</label>
+				
 			</fieldset>
 			<div class="errors"></div>
 			<input type="submit" />
