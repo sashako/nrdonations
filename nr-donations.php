@@ -23,6 +23,8 @@ class NR_Donations {
 
 		add_shortcode( 'nrdonate', array(&$this, 'create_donate_button'));
 		
+		add_action('init', array(&$this, 'create_post_type'));
+
 		add_action('wp_footer', array(&$this, 'register_user_assets'));
 
 		add_action('wp_ajax_submit_form', array(&$this, 'process_form'));
@@ -31,6 +33,25 @@ class NR_Donations {
 		require_once(dirname(__FILE__).'/include/Stripe.php');
 		
 	
+	}
+
+	function create_post_type() {
+		$labels = array(
+			'singular_name' =>'donation',
+			'name' => 'donations',
+			'not_found' => 'no donations found'
+		);
+		register_post_type('donation', array(
+			'label' => 'Donations',
+			'labels' => $labels,
+			'public' => true,
+			'publicly_queryable' => false, 
+			'exclude_from_search' => true,
+			'supports' => false,
+			
+			'show_in_menu' => false
+		));
+		
 	}
 
 	function create_donate_button($atts) {
@@ -46,7 +67,7 @@ class NR_Donations {
 	}
 
 	function admin_menu() {
-
+		add_menu_page('Donations', 'Donations', 'administrator', 'nr-donations/nrd-admin-list.php', '', 'dashicons-marker', 25);
 		add_options_page('Donations Settings', 'Donations Settings', 'administrator', 'nr-donations/nrd-admin-settings.php');
 	}
 
@@ -72,6 +93,7 @@ class NR_Donations {
 	function process_form() {
 
 		$nrd_opt = get_option('nrd_settings');
+		$post_data = array();
 
 		if(isset($nrd_opt['test_mode']) && $nrd_opt['test_mode']) {
 
@@ -123,7 +145,16 @@ class NR_Donations {
 			$sub = $mc->add($list_id, $email, $subscriber_name);
 
 		}
-		
+		$post_data['post_title'] = 'Donation by '.$name.' <'.$email.'>';
+		$post_data['post_type'] = 'donation';
+		$post_data['post_status'] = 'publish';
+		$post_id = wp_insert_post($post_data);
+
+		add_post_meta($post_id, 'donator', $name, true);
+		add_post_meta($post_id, 'email', $email, true);
+		add_post_meta($post_id, 'amount', intval($amount), true);
+		add_post_meta($post_id, 'subscribed', $subscribe, true);
+
 		die();
 		
 	}

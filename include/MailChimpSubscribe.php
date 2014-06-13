@@ -9,11 +9,11 @@
 
 		private $api_key;
 		private $api_endpoint = 'https://<dc>.api.mailchimp.com/2.0';
+		private $method = 'lists/subscribe';
 
 		function __construct($api_key) {
 
 			$this->api_key = $api_key;
-			$this->method = 'lists/subscribe';
 			list(, $datacentre) = explode('-', $this->api_key);
 			$this->api_endpoint = str_replace('<dc>', $datacentre, $this->api_endpoint);
 

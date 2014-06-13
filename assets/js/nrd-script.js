@@ -135,7 +135,6 @@
 				email : $form.find('input[name="email"]').val(),
 				subscribe : $form.find('input[name="subscribe"]').is(':checked')
 			};
-			console.log(call.data);
 			call.success = successfullySubmitted;
 			call.error = function() {
 				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false}, true);
@@ -145,9 +144,6 @@
 		}
 
 		function successfullySubmitted(data, status, xhr) {
-			console.log(data);
-			console.log(status);
-			console.log(xhr);
 			if(status === 'success') {
 				$formContainer.addClass('thank-you');
 			} else {
