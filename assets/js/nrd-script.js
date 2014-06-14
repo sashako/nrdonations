@@ -145,6 +145,7 @@
 
 		function successfullySubmitted(data, status, xhr) {
 			if(status === 'success') {
+				localStorage.setItem('donated', true);
 				$formContainer.addClass('thank-you');
 			} else {
 				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false}, true);
@@ -170,13 +171,59 @@
 	}) ();
 
 	
-	var buttons = $('.nr-donate-button');
+	var buttons = $('.nr-donate-button'),
+		supportsStorage = testStorage(),
+		currentMonth = new Date().getMonth() + 1;
 
 	if(buttons.length > 0 ) {
 
 		NRDForm.init();
 		
 		buttons.on('click', NRDForm.show);
+
+		if(supportsStorage) controlAutoPopup();
+		
+	}
+
+	function testStorage() {
+		try {
+			localStorage.setItem('test',true);
+			localStorage.removeItem('test');
+			sessionStorage.setItem('test', true);
+			sessionStorage.removeItem('test');
+			return true;
+		} catch (e) {
+			return false;
+		} 
+	}
+
+	function controlAutoPopup() {
+		var month = localStorage.getItem('month'),
+			visits = localStorage.getItem('visitCount');
+
+		if(!sessionStorage.getItem('inSession')) {
+
+			if(visits&&month) {
+
+				if(+month === +currentMonth) {
+					var c = +localStorage.getItem('visitCount');
+					if(c === 10 )  {
+						if(!localStorage.getItem('donated')) setTimeout(NRDForm.show, 1000);
+					} 
+					localStorage.setItem('visitCount', c+1);
+					
+				} else {
+					localStorage.setItem('month', currentMonth);
+					localStorage.setItem('visitCount', 0);
+					if(localStorage.getItem('donated')) localStorage.removeItem('donated');
+				}
+			} else {
+				localStorage.setItem('visitCount', 0);
+				localStorage.setItem('month', currentMonth);
+			}
+			sessionStorage.setItem('inSession', true);
+		}
+		
 	}
 
 })(window, Stripe, jQuery);
