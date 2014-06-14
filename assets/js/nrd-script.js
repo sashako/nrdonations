@@ -207,7 +207,7 @@
 
 				if(+month === +currentMonth) {
 					var c = +localStorage.getItem('visitCount');
-					if(c === 10 )  {
+					if(c === 9 )  {
 						if(!localStorage.getItem('donated')) setTimeout(NRDForm.show, 1000);
 					} 
 					localStorage.setItem('visitCount', c+1);
