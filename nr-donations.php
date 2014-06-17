@@ -76,7 +76,7 @@ class NR_Donations {
 		echo file_get_contents(plugins_url('assets/templates/nrd-form.php', __FILE__ ));
 
 		wp_register_script('stripe-js', 'https://js.stripe.com/v2/');
-		wp_register_script('nr-donations-js', plugins_url('assets/js/nrd-script.js', __FILE__));
+		wp_register_script('nr-donations-js', plugins_url('assets/js/nrd.min.js', __FILE__));
 		wp_register_style('nr-donations-styles', plugins_url('assets/css/nrd-styles.css', __FILE__));
 
 		wp_enqueue_script('stripe-js');

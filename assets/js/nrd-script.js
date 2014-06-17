@@ -28,7 +28,10 @@
 
 			$input.removeClass('error');
 
-			if($form.find('input.error').length < 1) $errorsContainer.removeClass('show').html('');
+			if($form.find('input.error').length < 1) {
+				$errorsContainer.removeClass('show').html('');
+				$form.find('input[type="submit"]').prop('disabled', false);
+			}
 			
 		}
 		function checkForErrors(e) {
@@ -40,7 +43,7 @@
 				monthVal = $form.find('input[name="exp-month"]').val(),
 				errors = [];
 
-			if( !amountVal || !strRex.test(amountVal) || parseInt( amountVal ) < 5 ) {
+			if( !amountVal || !strRex.test(amountVal) || parseInt( amountVal ) < 5 || isNaN(amountVal) ) {
 				errors.push({
 					message : 'Please enter a valid donation amount. $5 minimum.',
 					el : $form.find('input[name="amount"]')
@@ -91,13 +94,16 @@
 			var isLast = last || false;
 			if(err.el) err.el.addClass('error');
 			$errorsContainer.append('<span>'+err.message+'</span>');
-			if(isLast) $errorsContainer.addClass('show');
+			if(isLast) {
+				$errorsContainer.addClass('show');
+				$form.find('input[type="submit"]').prop('disabled', true);
+			}
 		}
 
 		function submitForm(e) {
 
 			Stripe.card.createToken($form, stripeResponseHeader);
-			$form.find('input[type="submit"]').prop('disabled', true);
+			$form.find('input[type="submit"]').prop('disabled', true).val('processing form');
 
 		}
 
@@ -111,7 +117,7 @@
 
 				displayError(error);
 				
-				$form.find('input[type="submit"]').prop('disabled', false);
+				$form.find('input[type="submit"]').prop('disabled', false).val('submit');
 
 			} else {
     
@@ -147,19 +153,26 @@
 			if(status === 'success') {
 				localStorage.setItem('donated', true);
 				$formContainer.addClass('thank-you');
+
 			} else {
 				displayError({message: 'Oops, something went wrong. Please try submitting the form again.', el: false}, true);
 			}
+			$form.find('input[type="submit"]').prop('disabled', false).val('submit');
 		}
 
 		function showForm() {
-			$formContainer.addClass('show');
+			$formContainer.show()
+			setTimeout(function(){
+				$formContainer.addClass('show');
+			}, 0);
 		}
 
 		function hideForm() {
-			$formContainer.removeClass('show thank-you');
+			$formContainer.hide().removeClass('show thank-you');
 			$form[0].reset();
-
+			$form.find('input[type="submit"]').prop('disabled', false).val('submit');
+			$form.find('.error').removeClass('error');
+			$errorsContainer.removeClass('show').html('');
 		}
 
 		return {
